@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# 🔑 ADD THESE 3 LINES HERE TO FIX THE FAILURE:
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
