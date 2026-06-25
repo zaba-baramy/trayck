@@ -116,7 +116,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Finish Tray $_currentTray?"),
-          content: const Text("This will permanently log the start/end times for this tray and advance you to the next one."),
+          content: const Text("This will permanently log all wear parameters, missed durations, and switch you to the next tray."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -127,13 +127,29 @@ class _TrackerScreenState extends State<TrackerScreen> {
                 final now = DateTime.now();
                 final formatter = DateFormat('MM/dd/yyyy @ hh:mm a');
 
+                // 1. Calculate final state totals before resetting variables
+                final int totalSecondsElapsed = now.difference(_trayStartDate).inSeconds;
+                final int currentMissedSeconds = !_isTraysIn ? now.difference(_lastActionTime).inSeconds : 0;
+                final int combinedMissedSeconds = _totalMissedTime.inSeconds + currentMissedSeconds;
+                final int effectiveWearSeconds = totalSecondsElapsed - combinedMissedSeconds;
+
+                final Duration finalWearDuration = Duration(seconds: effectiveWearSeconds > 0 ? effectiveWearSeconds : 0);
+                final Duration finalMissedDuration = Duration(seconds: combinedMissedSeconds);
+
                 final String startStr = formatter.format(_trayStartDate);
                 final String endStr = formatter.format(now);
-                final String summaryEntry = "📦 Tray $_currentTray Summary\nStarted: $startStr\nFinished: $endStr";
+
+                // 2. Build a comprehensive dashboard snapshot text entry
+                final String summaryEntry = "📦 TRAY $_currentTray SUMMARY\n"
+                    "📅 Period: $startStr → $endStr\n"
+                    "⏱️ Total Time Worn: ${_formatDuration(finalWearDuration)}\n"
+                    "⚠️ Total Time Missed: ${_formatDuration(finalMissedDuration)}";
 
                 setState(() {
+                  // Push this comprehensive summary into your permanent lifetime records list
                   _lifetimeTraySummaryLogs.insert(0, summaryEntry);
 
+                  // Safe clear state reset for the incoming tray
                   _totalMissedTime = Duration.zero;
                   _lastActionTime = now;
                   _trayStartDate = now;
