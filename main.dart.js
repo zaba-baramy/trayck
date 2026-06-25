@@ -66740,7 +66740,7 @@ p.x=m==null?A.d([],t.s):m
 o=o.CK("lifetimeTraySummaryLogs")
 p.y=o==null?A.d([],t.s):o
 s=A.kM(n.i(0,"totalMissedSeconds"))
-p.f=A.dc(0,0,s==null?12600:s)
+p.f=A.dc(0,0,s==null?20760:s)
 r=A.c5(n.i(0,"lastActionTime"))
 p.r=r!=null?A.acb(r):new A.cl(Date.now(),0,!1)
 q=A.c5(n.i(0,"trayStartDate"))
