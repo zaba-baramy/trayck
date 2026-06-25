@@ -51088,8 +51088,8 @@ s=this.b
 return s*(B.h.kR(a-1,this.a)+1)-(s-this.d)}}
 A.a2D.prototype={}
 A.a2E.prototype={
-Dv(a){var s=Math.max(0,a.w-36)/7,r=s/0.95
-return new A.a2H(7,r+6,s+6,r,s,A.rd(a.x))}}
+Dv(a){var s=Math.max(0,a.w-42)/8,r=s/0.95
+return new A.a2H(8,r+6,s+6,r,s,A.rd(a.x))}}
 A.pA.prototype={
 k(a){return"crossAxisOffset="+A.m(this.w)+"; "+this.SG(0)}}
 A.FZ.prototype={
@@ -68023,8 +68023,8 @@ this.fS()},
 a10(){var s=this.c
 s.toString
 A.aze(new A.aaB(this),s,t.z)},
-Xu(){var s,r=J.E6(14,t.CH)
-for(s=0;s<14;++s)r[s]=new A.c5(Date.now(),0,!1).r7(0-864e8*(13-s))
+Xu(){var s,r=J.E6(16,t.CH)
+for(s=0;s<16;++s)r[s]=new A.c5(Date.now(),0,!1).r7(0-864e8*(15-s))
 return r},
 Xj(a,b){var s="yyyy-MM-dd",r=new A.c5(Date.now(),0,!1),q=A.dl(s).cE(r),p=A.dl(s).cE(a)
 if(a.BB(this.w)&&p!==A.dl(s).cE(this.w))return A.ay(40,B.P.v()>>>16&255,B.P.v()>>>8&255,B.P.v()&255)
@@ -68063,9 +68063,9 @@ a5=A.ec("Tray "+a0.e+" Dashboard",a1,a1,a1,a1,a1,a1)
 p=t.E
 o=A.d([A.ai4(a1,a1,B.Cg,a1,a1,a0.ga1_(),a1,a1,"Next Tray")],p)
 n=A.id(16)
-n=A.C7(new A.cg(B.BH,A.jy(A.d([A.H9(B.ag,A.d([A.py(A.ah3(A.ay(25,B.P.v()>>>16&255,B.P.v()>>>8&255,B.P.v()&255),12,b0,B.xo),180,180),A.py(A.ah3(A.ay(25,B.P.v()>>>16&255,B.P.v()>>>8&255,B.P.v()&255),12,s,B.xn),140,140),A.jy(A.d([A.ec(B.c.P(b0*100,0)+"%",a1,a1,a1,B.N5,a1,a1),B.OV],p),B.av,B.ar,B.dz)],p),B.Y,B.dV,a1),B.w9,A.wq(A.d([a0.oA("14-Day Cycle",B.aP),a0.oA("22h Target",B.dA)],p),B.av,B.iz,B.aE)],p),B.av,B.ar,B.aE),a1),a1,a1,new A.c8(n,B.o))
+n=A.C7(new A.cg(B.BH,A.jy(A.d([A.H9(B.ag,A.d([A.py(A.ah3(A.ay(25,B.P.v()>>>16&255,B.P.v()>>>8&255,B.P.v()&255),12,b0,B.xo),180,180),A.py(A.ah3(A.ay(25,B.P.v()>>>16&255,B.P.v()>>>8&255,B.P.v()&255),12,s,B.xn),140,140),A.jy(A.d([A.ec(B.c.P(b0*100,0)+"%",a1,a1,a1,B.N5,a1,a1),B.OO],p),B.av,B.ar,B.dz)],p),B.Y,B.dV,a1),B.w9,A.wq(A.d([a0.oA("14-Day Cycle",B.aP),a0.oA("22h Target",B.dA)],p),B.av,B.iz,B.aE)],p),B.av,B.ar,B.aE),a1),a1,a1,new A.c8(n,B.o))
 m=A.id(16)
-m=A.C7(new A.cg(B.BD,A.jy(A.d([B.IF,B.w7,new A.DL(B.z1,new A.H0(new A.aaI(a0,q,a7,a3),14,!0,!0,!0,a1),a1,B.aq,!1,a1,a1,B.qF,!0,a1,a1,14,B.ba,a1,a1,B.Y,B.aj,a1),B.w7,A.wq(A.d([a0.oA("Elite (21h+)",B.aP),a0.oA("Optimal (19-21h)",B.dA),a0.oA("Low (<19h)",B.qx)],p),B.av,B.cp,B.aE)],p),B.aK,B.ar,B.aE),a1),a1,a1,new A.c8(m,B.o))
+m=A.C7(new A.cg(B.BD,A.jy(A.d([B.IF,B.w7,new A.DL(B.z1,new A.H0(new A.aaI(a0,q,a7,a3),16,!0,!0,!0,a1),a1,B.aq,!1,a1,a1,B.qF,!0,a1,a1,16,B.ba,a1,a1,B.Y,B.aj,a1),B.w7,A.wq(A.d([a0.oA("Elite (21h+)",B.aP),a0.oA("Optimal (19-21h)",B.dA),a0.oA("Low (<19h)",B.qx)],p),B.av,B.cp,B.aE)],p),B.aK,B.ar,B.aE),a1),a1,a1,new A.c8(m,B.o))
 l=A.id(16)
 l=A.C7(new A.cg(B.kU,A.jy(A.d([A.ec("Started: "+A.dl("MMMM dd, yyyy @ h:mm a").cE(a0.w),a1,a1,a1,B.Nh,a1,a1),B.Bi,A.ec("Total Worn: "+a0.ru(a9),a1,a1,a1,B.M0,a1,a1),B.Ku,A.ec("Total Missed: "+a0.ru(A.d_(0,0,0,a7)),a1,a1,a1,B.Nq,a1,a1)],p),B.aK,B.ar,B.aE),a1),a1,a1,new A.c8(l,B.o))
 k=a0.d?B.Go:B.qz
@@ -68082,7 +68082,7 @@ for(c=0;c<e;c=b){b=c+1
 d[c]=b}a=A.Y(d).h("aa<1,jD<l>>")
 a=A.W(new A.aa(d,new A.aaJ(a0),a),a.h("au.E"))
 h=A.d([h,new A.oo(a,g,new A.aaK(a0),f,B.Cf,B.kF,a1,t.CB)],p)
-if(a0.z!=null)B.b.K(h,A.d([B.Ko,A.aeL(B.OT,new A.aaL(a0))],p))
+if(a0.z!=null)B.b.K(h,A.d([B.Ko,A.aeL(B.OU,new A.aaL(a0))],p))
 h=A.wq(h,B.av,B.cp,B.aE)
 if(r.a===0)g=new A.cg(B.kT,A.ec("No logged activity for Tray "+a0.Q+".",a1,a1,a1,B.ww,B.cH,a1),a1)
 else{g=A.k(r).h("e3<1,2>")
@@ -68093,7 +68093,7 @@ n=a0.z
 if(n!=null&&!r.a0(n))g.push(B.Hr)
 g.push(B.Kt)
 n=a0.y.length
-if(n!==0)B.b.K(g,A.d([B.OO,B.w6,new A.uU(new A.H0(new A.aaO(a0),n,!0,!0,!0,a1),a1,B.aq,!1,a1,a1,B.qF,!0,a1,a1,n,B.ba,a1,a1,B.Y,B.aj,a1),B.w9],p))
+if(n!==0)B.b.K(g,A.d([B.OP,B.w6,new A.uU(new A.H0(new A.aaO(a0),n,!0,!0,!0,a1),a1,B.aq,!1,a1,a1,B.qF,!0,a1,a1,n,B.ba,a1,a1,B.Y,B.aj,a1),B.w9],p))
 return new A.ws(new A.rH(a5,o,!0,new A.LG(a1,a1,1/0,56),a1),A.aub(new A.cg(B.kU,A.jy(g,B.ck,B.ar,B.aE),a1)),a1)},
 oA(a,b){var s=null
 return A.wq(A.d([A.CC(s,new A.dC(b,s,s,s,s,s,B.fX),12,s,s,12),B.Kn,A.ec(a,s,s,s,B.Mx,s,s)],t.E),B.av,B.ar,B.aE)}}
@@ -68129,7 +68129,7 @@ if(p.length>200)B.b.hR(p)},
 $S:0}
 A.aaB.prototype={
 $1(a){var s=null,r=this.a
-return new A.nU(A.ec("Finish Tray "+r.e+"?",s,s,s,s,s,s),B.OS,A.d([A.aeL(B.OQ,new A.aaz(a)),A.aeL(B.OR,new A.aaA(r,a))],t.E),s)},
+return new A.nU(A.ec("Finish Tray "+r.e+"?",s,s,s,s,s,s),B.OT,A.d([A.aeL(B.OR,new A.aaz(a)),A.aeL(B.OS,new A.aaA(r,a))],t.E),s)},
 $S:444}
 A.aaz.prototype={
 $0(){A.iC(this.a,!1).qq(null)
@@ -72392,8 +72392,8 @@ B.Ho=new A.F7(1,"end")
 B.Hp=new A.F8(0,"nearestOverlay")
 B.Hq=new A.F8(1,"rootOverlay")
 B.ww=new A.o(!0,B.P,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OP=new A.eH("No activity items logged for this day.",null,B.ww,B.cH,null,null,null,null,null)
-B.Hr=new A.cg(B.kT,B.OP,null)
+B.OQ=new A.eH("No activity items logged for this day.",null,B.ww,B.cH,null,null,null,null,null)
+B.Hr=new A.cg(B.kT,B.OQ,null)
 B.bA=new A.Fc(0,"fill")
 B.bf=new A.Fc(1,"stroke")
 B.Hs=new A.k1(1/0)
@@ -72474,8 +72474,8 @@ B.cK=new A.a4m(1,"down")
 B.Ot=new A.o(!0,null,null,null,null,null,14,B.aL,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ON=new A.eH("Daily Compliance Matrix",null,B.Ot,null,null,null,null,null,null)
 B.Mg=new A.o(!0,B.P,null,null,null,null,10,B.a8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OU=new A.eH("14-Day Cycle View",null,B.Mg,null,null,null,null,null,null)
-B.Ez=s([B.ON,B.OU],t.E)
+B.OV=new A.eH("14-Day Cycle View",null,B.Mg,null,null,null,null,null,null)
+B.Ez=s([B.ON,B.OV],t.E)
 B.IF=new A.wp(B.aV,B.cp,B.aE,B.av,null,B.cK,null,0,B.Ez,null)
 B.IG=new A.Gd(null,null)
 B.c6=new A.mT(0,"idle")
@@ -72961,16 +72961,16 @@ B.NB=new A.o(!0,B.D,null,".AppleSystemUIFont",null,null,null,null,null,null,null
 B.NS=new A.o(!0,B.l,null,".AppleSystemUIFont",null,null,null,null,null,null,null,null,null,null,null,null,null,B.f,null,null,null,"blackRedwoodCity labelMedium",null,null,null,null)
 B.Lq=new A.o(!0,B.l,null,".AppleSystemUIFont",null,null,null,null,null,null,null,null,null,null,null,null,null,B.f,null,null,null,"blackRedwoodCity labelSmall",null,null,null,null)
 B.OM=new A.du(B.MT,B.LY,B.MU,B.Nj,B.LI,B.LP,B.Mf,B.Nd,B.Mr,B.NE,B.Lj,B.Ly,B.NB,B.NS,B.Lq)
-B.Nu=new A.o(!0,B.P,null,null,null,null,18,B.aL,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OO=new A.eH("Treatment History Summary",null,B.Nu,null,null,null,null,null,null)
-B.OQ=new A.eH("Cancel",null,null,null,null,null,null,null,null)
-B.Mk=new A.o(!0,B.aP,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OR=new A.eH("Next Tray",null,B.Mk,null,null,null,null,null,null)
-B.OS=new A.eH("This will permanently log all wear parameters, missed durations, and switch you to the next tray.",null,null,null,null,null,null,null,null)
-B.Oh=new A.o(!0,B.aP,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OT=new A.eH("Show All",null,B.Oh,null,null,null,null,null,null)
 B.N6=new A.o(!0,B.P,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.OV=new A.eH("Completed",null,B.N6,null,null,null,null,null,null)
+B.OO=new A.eH("14-Day Target Plan",null,B.N6,null,null,null,null,null,null)
+B.Nu=new A.o(!0,B.P,null,null,null,null,18,B.aL,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.OP=new A.eH("Treatment History Summary",null,B.Nu,null,null,null,null,null,null)
+B.OR=new A.eH("Cancel",null,null,null,null,null,null,null,null)
+B.Mk=new A.o(!0,B.aP,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.OS=new A.eH("Next Tray",null,B.Mk,null,null,null,null,null,null)
+B.OT=new A.eH("This will permanently log all wear parameters, missed durations, and switch you to the next tray.",null,null,null,null,null,null,null,null)
+B.Oh=new A.o(!0,B.aP,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.OU=new A.eH("Show All",null,B.Oh,null,null,null,null,null,null)
 B.Rg=new A.a3Y(0,"system")
 B.H4=new A.j(0.056,0.024)
 B.He=new A.j(0.108,0.3085)
