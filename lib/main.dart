@@ -60,8 +60,8 @@ class _TrackerScreenState extends State<TrackerScreen> {
       _historyLogs = prefs.getStringList('historyLogs') ?? [];
       _lifetimeTraySummaryLogs = prefs.getStringList('lifetimeTraySummaryLogs') ?? [];
 
-      // ✨ Sync: If no data exists, seed your historical missed time (3 hours, 30 minutes)
-      final int totalMissedSeconds = prefs.getInt('totalMissedSeconds') ?? (3 * 3600 + 30 * 60);
+      // ✨ Sync: Seed your exact historical missed time (5 hours, 46 minutes)
+      final int totalMissedSeconds = prefs.getInt('totalMissedSeconds') ?? (5 * 3600 + 46 * 60);
       _totalMissedTime = Duration(seconds: totalMissedSeconds);
 
       final String? lastActionStr = prefs.getString('lastActionTime');
