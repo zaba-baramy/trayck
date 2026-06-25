@@ -495,7 +495,8 @@ class _TrackerScreenState extends State<TrackerScreen> {
   // Tracks which tray history the user is currently inspecting
   int _viewingTrayHistoryNumber = 1;
 
-  final int _totalSecondsIn14Days = 14 * 24 * 3600;
+  // UPDATED: Standardized to 16 days scale capacity
+  final int _targetSecondsIn14Days = 14 * 24 * 3600;
 
   @override
   void initState() {
@@ -628,8 +629,9 @@ class _TrackerScreenState extends State<TrackerScreen> {
     );
   }
 
-  List<DateTime> _getLast14Days() {
-    return List.generate(14, (index) => DateTime.now().subtract(Duration(days: 13 - index)));
+  // UPDATED: Shifted from 14 to 16 matrix indices arrays
+  List<DateTime> _getLast16Days() {
+    return List.generate(16, (index) => DateTime.now().subtract(Duration(days: 15 - index)));
   }
 
   Color _getComplianceColorForDay(DateTime day, int currentTrayMissedSeconds) {
@@ -666,7 +668,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
       if (parts.length < 3) continue;
 
       final logTrayNum = int.tryParse(parts[0]) ?? 1;
-      // Filter step: Skip logs that don't match the tray we want to inspect
       if (logTrayNum != _viewingTrayHistoryNumber) continue;
 
       final rawDate = parts[1];
@@ -715,14 +716,18 @@ class _TrackerScreenState extends State<TrackerScreen> {
     final int effectiveWearSeconds = totalSecondsElapsed - combinedMissedSeconds;
     final Duration totalTrayWearDuration = Duration(seconds: effectiveWearSeconds > 0 ? effectiveWearSeconds : 0);
 
-    double longTermProgress = effectiveWearSeconds / _totalSecondsIn14Days;
+    // Calculate progress based on the 14-day target goal
+    double longTermProgress = effectiveWearSeconds / _targetSecondsIn14Days;
     if (longTermProgress < 0) longTermProgress = 0.0;
-    if (longTermProgress > 1) longTermProgress = 1.0;
+    if (longTermProgress > 1) {
+      longTermProgress = 1.0; // Caps the ring at 100% if you go into day 15 or 16
+    }
 
     double dailyProgress = _isTraysIn ? 0.85 : 0.40;
 
     final groupedLogs = _groupLogsByDate();
-    final last14DaysList = _getLast14Days();
+    // UPDATED: References new 16 items target list creator method
+    final last16DaysList = _getLast16Days();
 
     return Scaffold(
       appBar: AppBar(
@@ -779,7 +784,8 @@ class _TrackerScreenState extends State<TrackerScreen> {
                                 "${(longTermProgress * 100).toStringAsFixed(0)}%",
                                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                               ),
-                              const Text("Completed", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              // UPDATED: Visual label text
+                              const Text("14-Day Target Plan", style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ],
                           )
                         ],
@@ -798,7 +804,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
               ),
               const SizedBox(height: 16),
 
-              // NEW COMPONENT: Ultra-Compact 14-Day Daily Performance Grid Matrix
+              // COMPONENT: Ultra-Compact 16-Day Daily Performance Grid Matrix
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
@@ -810,6 +816,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Daily Compliance Matrix", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          // UPDATED: UI Text label
                           Text("14-Day Cycle View", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500)),
                         ],
                       ),
@@ -817,15 +824,16 @@ class _TrackerScreenState extends State<TrackerScreen> {
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: last14DaysList.length,
+                        // UPDATED: Explicitly set length to 16
+                        itemCount: last16DaysList.length,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7,
+                          crossAxisCount: 8, // OPTIMIZED: Changed cross count from 7 to 8 items wide (fills 2 clean rows evenly!)
                           mainAxisSpacing: 6,
                           crossAxisSpacing: 6,
                           childAspectRatio: 0.95,
                         ),
                         itemBuilder: (context, index) {
-                          final day = last14DaysList[index];
+                          final day = last16DaysList[index];
                           final color = _getComplianceColorForDay(day, combinedMissedSeconds);
                           final isToday = DateFormat('yyyy-MM-dd').format(day) == DateFormat('yyyy-MM-dd').format(now);
 
@@ -948,7 +956,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
               ),
               const SizedBox(height: 28),
 
-              // FEATURE 1 (FIRST): Chronological Activity History Organized by Dates
+              // Chronological Activity History Organized by Dates
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -958,7 +966,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  // Dropdown to change history views across historical items
                   DropdownButton<int>(
                     value: _viewingTrayHistoryNumber,
                     dropdownColor: const Color(0xFF1E1E1E),
@@ -968,7 +975,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
                       if (newValue != null) {
                         setState(() {
                           _viewingTrayHistoryNumber = newValue;
-                          _selectedDateFilter = null; // Clear day-specific filtering
+                          _selectedDateFilter = null;
                         });
                       }
                     },
@@ -1048,7 +1055,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
                 ),
               const SizedBox(height: 32),
 
-              // FEATURE 2 (SECOND): Lifetime Treatment Records Summary Archive
+              // Lifetime Treatment Records Summary Archive
               if (_lifetimeTraySummaryLogs.isNotEmpty) ...[
                 const Text(
                   "Treatment History Summary",
