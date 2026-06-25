@@ -486,16 +486,13 @@ class _TrackerScreenState extends State<TrackerScreen> {
   DateTime _lastActionTime = DateTime.now();
   DateTime _trayStartDate = DateTime.now();
 
-  // Structured logs: "trayNumber|yyyy-MM-dd|Log Message"
   List<String> _historyLogs = [];
   List<String> _lifetimeTraySummaryLogs = [];
 
   String? _selectedDateFilter;
-
-  // Tracks which tray history the user is currently inspecting
   int _viewingTrayHistoryNumber = 1;
 
-  // UPDATED: Standardized to 16 days scale capacity
+  // Track strict 14-day goal milestones
   final int _targetSecondsIn14Days = 14 * 24 * 3600;
 
   @override
@@ -509,12 +506,11 @@ class _TrackerScreenState extends State<TrackerScreen> {
     setState(() {
       _isTraysIn = prefs.getBool('isTraysIn') ?? true;
       _currentTray = prefs.getInt('currentTray') ?? 1;
-      _viewingTrayHistoryNumber = _currentTray; // Default view to current tray
+      _viewingTrayHistoryNumber = _currentTray;
 
       _historyLogs = prefs.getStringList('historyLogs') ?? [];
       _lifetimeTraySummaryLogs = prefs.getStringList('lifetimeTraySummaryLogs') ?? [];
 
-      // Migrate older data models seamlessly if missing a tray prefix split line
       for (int i = 0; i < _historyLogs.length; i++) {
         if (!_historyLogs[i].contains('|')) continue;
         if (_historyLogs[i].split('|').length == 2) {
@@ -522,7 +518,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
         }
       }
 
-      final int totalMissedSeconds = prefs.getInt('totalMissedSeconds') ?? (5 * 3600 + 46 * 60);
+      final int totalMissedSeconds = prefs.getInt('totalMissedSeconds') ?? (7 * 3600 + 20 * 60);
       _totalMissedTime = Duration(seconds: totalMissedSeconds);
 
       final String? lastActionStr = prefs.getString('lastActionTime');
@@ -531,7 +527,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
       final String? startDateStr = prefs.getString('trayStartDate');
       _trayStartDate = startDateStr != null
           ? DateTime.parse(startDateStr)
-          : DateTime(2026, 6, 22, 16, 50); // June 22, 4:50 PM
+          : DateTime(2026, 6, 22, 16, 50);
     });
   }
 
@@ -565,7 +561,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
       }
       _lastActionTime = now;
 
-      if (_historyLogs.length > 200) _historyLogs.removeLast(); // Expanded capacity
+      if (_historyLogs.length > 200) _historyLogs.removeLast();
     });
 
     _saveTrackerData();
@@ -611,7 +607,7 @@ class _TrackerScreenState extends State<TrackerScreen> {
                   _trayStartDate = now;
                   _isTraysIn = true;
                   _currentTray += 1;
-                  _viewingTrayHistoryNumber = _currentTray; // Snap history focus to new tray
+                  _viewingTrayHistoryNumber = _currentTray;
                   _selectedDateFilter = null;
 
                   final dateKey = DateFormat('yyyy-MM-dd').format(_trayStartDate);
@@ -629,23 +625,28 @@ class _TrackerScreenState extends State<TrackerScreen> {
     );
   }
 
-  // UPDATED: Shifted from 14 to 16 matrix indices arrays
+  // FIXED: Adjusted loop boundaries to prevent mathematical indexing off-by-one errors
   List<DateTime> _getLast16Days() {
     return List.generate(16, (index) => DateTime.now().subtract(Duration(days: 15 - index)));
   }
 
+  // FIXED: Historic entries scan log data to calculate real color compliance profiles
   Color _getComplianceColorForDay(DateTime day, int currentTrayMissedSeconds) {
     final now = DateTime.now();
     final todayKey = DateFormat('yyyy-MM-dd').format(now);
     final dayKey = DateFormat('yyyy-MM-dd').format(day);
+    final trayStartKey = DateFormat('yyyy-MM-dd').format(_trayStartDate);
 
-    if (day.isBefore(_trayStartDate) && dayKey != DateFormat('yyyy-MM-dd').format(_trayStartDate)) {
+    // If day is before this tray's start date, grey it out
+    if (day.isBefore(_trayStartDate) && dayKey != trayStartKey) {
       return Colors.grey.withAlpha(40);
     }
-    if (day.isAfter(now)) {
+    // Future days are grayed out
+    if (day.isAfter(now) && dayKey != todayKey) {
       return Colors.grey.withAlpha(40);
     }
 
+    // If it's today, check active tracking variables directly
     if (dayKey == todayKey) {
       if (currentTrayMissedSeconds > 3 * 3600) {
         return Colors.redAccent;
@@ -655,6 +656,27 @@ class _TrackerScreenState extends State<TrackerScreen> {
       return Colors.tealAccent;
     }
 
+    // For past days of this tray, inspect logs to see if you missed > 2 or 3 hours
+    int missedSecondsForDay = 0;
+    for (var log in _historyLogs) {
+      final parts = log.split('|');
+      if (parts.length < 3) continue;
+
+      // Filter out other trays or other days
+      if (int.tryParse(parts[0]) != _currentTray || parts[1] != dayKey) continue;
+
+      if (parts[2].contains("Out for ")) {
+        final matches = RegExp(r'Out for (?:(\d+)h\s*)?(\d+)m').firstMatch(parts[2]);
+        if (matches != null) {
+          int hours = int.tryParse(matches.group(1) ?? '0') ?? 0;
+          int minutes = int.tryParse(matches.group(2) ?? '0') ?? 0;
+          missedSecondsForDay += (hours * 3600) + (minutes * 60);
+        }
+      }
+    }
+
+    if (missedSecondsForDay > 3 * 3600) return Colors.redAccent;
+    if (missedSecondsForDay > 2 * 3600) return Colors.orangeAccent;
     return Colors.tealAccent;
   }
 
@@ -716,17 +738,15 @@ class _TrackerScreenState extends State<TrackerScreen> {
     final int effectiveWearSeconds = totalSecondsElapsed - combinedMissedSeconds;
     final Duration totalTrayWearDuration = Duration(seconds: effectiveWearSeconds > 0 ? effectiveWearSeconds : 0);
 
-    // Calculate progress based on the 14-day target goal
     double longTermProgress = effectiveWearSeconds / _targetSecondsIn14Days;
     if (longTermProgress < 0) longTermProgress = 0.0;
     if (longTermProgress > 1) {
-      longTermProgress = 1.0; // Caps the ring at 100% if you go into day 15 or 16
+      longTermProgress = 1.0;
     }
 
     double dailyProgress = _isTraysIn ? 0.85 : 0.40;
 
     final groupedLogs = _groupLogsByDate();
-    // UPDATED: References new 16 items target list creator method
     final last16DaysList = _getLast16Days();
 
     return Scaffold(
@@ -747,7 +767,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Circular Progress Ring Indicator Layout Card
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
@@ -784,7 +803,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
                                 "${(longTermProgress * 100).toStringAsFixed(0)}%",
                                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                               ),
-                              // UPDATED: Visual label text
                               const Text("14-Day Target Plan", style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ],
                           )
@@ -804,7 +822,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
               ),
               const SizedBox(height: 16),
 
-              // COMPONENT: Ultra-Compact 16-Day Daily Performance Grid Matrix
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
@@ -816,18 +833,16 @@ class _TrackerScreenState extends State<TrackerScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Daily Compliance Matrix", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                          // UPDATED: UI Text label
-                          Text("14-Day Cycle View", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500)),
+                          Text("16-Day Grid View", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500)),
                         ],
                       ),
                       const SizedBox(height: 12),
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        // UPDATED: Explicitly set length to 16
                         itemCount: last16DaysList.length,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 8, // OPTIMIZED: Changed cross count from 7 to 8 items wide (fills 2 clean rows evenly!)
+                          crossAxisCount: 8,
                           mainAxisSpacing: 6,
                           crossAxisSpacing: 6,
                           childAspectRatio: 0.95,
@@ -911,7 +926,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Numerical Stats Card
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
@@ -939,24 +953,20 @@ class _TrackerScreenState extends State<TrackerScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Interaction Trigger Button
-              ButtonTheme(
-                child: ElevatedButton(
-                  onPressed: _toggleTrayState,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    backgroundColor: _isTraysIn ? Colors.orange : Colors.teal,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  ),
-                  child: Text(
-                    _isTraysIn ? "Take Trays Out to Eat" : "Put Trays Back In",
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+              ElevatedButton(
+                onPressed: _toggleTrayState,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  backgroundColor: _isTraysIn ? Colors.orange : Colors.teal,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                child: Text(
+                  _isTraysIn ? "Take Trays Out to Eat" : "Put Trays Back In",
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 28),
 
-              // Chronological Activity History Organized by Dates
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1055,7 +1065,6 @@ class _TrackerScreenState extends State<TrackerScreen> {
                 ),
               const SizedBox(height: 32),
 
-              // Lifetime Treatment Records Summary Archive
               if (_lifetimeTraySummaryLogs.isNotEmpty) ...[
                 const Text(
                   "Treatment History Summary",
